@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Udaan - G-Cruise Alliance</title>
+    <style>
+        body {
+            background-color: white;
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
+            transition: background-color 5s linear; /* Background color transition */
+        }
+
+        .content-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0; /* Initially hidden */
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Adjust vertical alignment here (optional) */
+        }
+
+        .logo {
+            font-size: 50px; /* Adjust logo size if needed */
+        }
+
+
+
+        .big-airplane {
+            font-size: 150px; /* Adjust size as needed */
+            animation: flyAcross 10s linear forwards;
+            transform: translate(-100%, 100%) rotate(45deg); /* Start at the left edge */
+            opacity: 0; /* Initially hidden */
+        }
+
+
+        .udaan-text {
+            font-family: 'Orbitron';
+            font-size: 5em;
+            color: black;
+            margin-top: -20px;
+        }
+
+        .g-cruise-text {
+            font-size: 1.8em;
+            color: gold;
+            position: relative;    /* Add this for fine-tuned positioning */
+            top: -90px;             /* Adjust this to move the text up */
+            left: 35px;            /* Adjust this to move the text right */
+        }
+
+
+        @keyframes flyAcross {
+            from {
+                transform: translate(-100%, 100%) rotate(45deg) !important;
+                background-color: transparent;
+            }
+            to {
+                transform: translate(150vw, -100%) rotate(45deg) !important; /* Offscreen to right */
+                background-color: transparent;
+            }
+            50% {
+                opacity: 1; /* Fully visible at the end */
+            }
+                
+        }
+
+        .next-button {
+            background-color: #4CAF50; /* Example: Green background*/
+            color: white;
+            padding: 15px 30px;
+            border: none; 
+            border-radius: 5px;
+            cursor: pointer; 
+            position: relative; /* Allows positioning of the arrow */
+        }
+        
+        .next-button .arrow {
+            position: absolute;
+            right: 10px; /* Adjust arrow position inside the button */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* New style for the overlay animation */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        /* Style for active state (when animation is playing) */
+        .overlay.active {
+            opacity: 1; /* Fully visible during animation */
+        }
+  
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <div class="logo-container"> </div> <span class="big-airplane">✈️</span> 
+        <div class="logo-container">
+            <span class="logo">🛩</span>
+            <h1 class="udaan-text">UDAAN</h1>
+            <p class="g-cruise-text">G-Cruise Alliance</p>
+            <button class="next-button">Next Page <span class="arrow">→</span></button>
+        </div>
+     </div>
+     <script>const contentWrapper = document.querySelector('.content-wrapper');
+        const body = document.querySelector('body');
+        const animationDuration = 3000; // 3 seconds 
+        
+        // Function for smoother color transition
+        const lerpColor = (a, b, amount) => {
+            const ar = a >> 16, ag = a >> 8 & 0xff, ab = a & 0xff;
+            const br = b >> 16, bg = b >> 8 & 0xff, bb = b & 0xff;
+            const rr = ar + amount * (br - ar);
+            const rg = ag + amount * (bg - ag);
+            const rb = ab + amount * (bb - ab);
+        
+            return (rr << 16) + (rg << 8) + (rb | 0);
+        }
+        
+        const startTime = Date.now();
+        
+        // Update color animation every frame
+        const animateColorChange = () => {
+            const timeElapsed = Date.now() - startTime;
+            const progress = timeElapsed / animationDuration;
+            const easedProgress = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+        
+            const newColor = lerpColor(0xffffff, 0x87ceeb, easedProgress); // white to skyblue
+            body.style.backgroundColor = '#' + newColor.toString(16).padStart(6, '0');
+        
+            if (progress >= 0.2) { 
+                contentWrapper.style.opacity = 1;
+            }
+        
+            if (timeElapsed < animationDuration) {
+                requestAnimationFrame(animateColorChange);
+            }
+        }
+        
+        // Start animation
+        requestAnimationFrame(animateColorChange);
+        
+        const nextButton = document.querySelector('.next-button');
+        const nextPageURL = "index2.html";  // Replace with the URL of the next page
+        const overlay = document.createElement('div');
+        overlay.classList.add('overlay'); // Add the overlay styles
+        
+        nextButton.addEventListener('click', () => {
+          document.body.appendChild(overlay); // Add the overlay to the body
+          overlay.classList.add('active'); // Start the animation
+        
+          //  After animation, redirect to the next page
+          setTimeout(() => {
+            window.location.href = nextPageURL;
+          }, 500); // Adjust the timeout value (in milliseconds) for animation duration
+        });
+        </script>
+</body>
+</html>
